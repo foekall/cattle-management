@@ -14,9 +14,9 @@ var db *gorm.DB
 
 type User struct {
 	gorm.Model
-	ID       int64  `gorm:"primaryKey"`
-	FullName string `gorm:"type:varchar(30)" validate:"required"`
-	// DateOfBirth datatypes.Date
+	ID          int64   `gorm:"primaryKey"`
+	FullName    string  `gorm:"type:varchar(30)" validate:"required"`
+	DateOfBirth string  //`time_format:"2006-01-02" time_utc:"1"`
 	PhoneNumber string  `gorm:"type:varchar(20)" validate:"required"`
 	Email       *string `gorm:"type:varchar(30);unique_index" validate:"required,email"`
 	Password    string  `gorm:"type:varchar(255);->:false;<-:create" validate:"required,max=20,min=6"`
