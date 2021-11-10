@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -15,7 +14,6 @@ var validate *validator.Validate
 
 func CreateUser(c *gin.Context) {
 	if err := c.ShouldBindJSON(&newUser); err != nil {
-		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -28,11 +26,16 @@ func CreateUser(c *gin.Context) {
 			switch err.Tag() {
 			case "required":
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Field() + " is a required"})
+				return
 			case "max":
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Field() + " is shout not more than " + err.Param() + " characters"})
+				return
 			case "min":
-				c.JSON(http.StatusBadRequest, gin.H{"error": "Something not right"})
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Field() + " is shout not less than " + err.Param() + " characters"})
+				return
 			default:
+				c.JSON(http.StatusBadRequest, gin.H{"error": "Something not right"})
+				return
 			}
 			// fmt.Println(err.Error())
 			// fmt.Println(err.Namespace())
@@ -46,7 +49,6 @@ func CreateUser(c *gin.Context) {
 			// fmt.Println(err.Value())
 			// fmt.Println(err.Param())
 			// fmt.Println()
-			return
 		}
 	}
 

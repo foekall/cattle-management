@@ -18,7 +18,8 @@ func Auth(c *gin.Context) {
 
 	resAuth, err := models.Login(&newAuth)
 	if err != nil {
-
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.Header("Content-Type", "application/json")
