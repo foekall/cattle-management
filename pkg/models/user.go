@@ -43,7 +43,7 @@ func CreateUser(u *User) (*User, error) {
 
 	res := db.First(&Users, "email = ?", u.Email)
 	if res.RowsAffected > 0 {
-		return nil, errors.New("Email already registered. Please choose another one")
+		return nil, errors.New("email already registered. Please choose another one")
 	}
 
 	db.Create(&u)
@@ -66,7 +66,7 @@ func GetUserById(id int64) []User {
 func UpdateUser(u *User) (*User, error) {
 	res := db.First(&Users, u.ID)
 	if res.RowsAffected > 0 {
-		return nil, errors.New("Record not found")
+		return nil, errors.New("record not found")
 	}
 	db.Updates(&u)
 	return u, nil
@@ -76,7 +76,7 @@ func DeleteUser(id int64) (string, error) {
 
 	res := db.First(&Users, id)
 	if res.RowsAffected > 0 {
-		return "", errors.New("Record not found")
+		return "", errors.New("record not found")
 	}
 	db.Delete(&Users)
 	return "User successfully deleted", nil

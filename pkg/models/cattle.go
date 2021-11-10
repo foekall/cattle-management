@@ -49,7 +49,7 @@ func UpdateCattle(c *Cattle) (*Cattle, error) {
 	if res.RowsAffected > 0 {
 		db.Updates(&c)
 	} else {
-		return nil, errors.New("Record not found!")
+		return nil, errors.New("record not found")
 	}
 	return c, nil
 }
@@ -60,7 +60,7 @@ func DeleteCattle(id int64) (string, error) {
 	if res.RowsAffected > 0 {
 		db.Delete(&Cattles)
 	} else {
-		return "", errors.New("Record not found!")
+		return "", errors.New("record not found")
 	}
 	return "Successfully deleted", nil
 }
