@@ -2,6 +2,8 @@ package models
 
 import (
 	"errors"
+	"log"
+	"os"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -16,17 +18,21 @@ type Auth struct {
 
 // var newUser models.User
 
-type Password struct {
+type UserInfo struct {
+	Id       int64
 	Password string
 }
 
 func Login(a *Auth) (*Auth, error) {
 
-	var password Password
-	db.Table("users").Select("password").Where("email = ?", a.Email).Scan(&password)
-	pwd := password.Password
-	if err := bcrypt.CompareHashAndPassword([]byte(pwd), []byte(a.Password)); err != nil {
-		return nil, errors.New(err.Error())
+	var userinfo UserInfo
+	db.Table("users").Select("password", "id").Where("email = ?", a.Email).Scan(&userinfo)
+	password := userinfo.Password
+	// userid := userinfo.Id
+	log.Println(os.Getenv("username"))
+
+	if err := bcrypt.CompareHashAndPassword([]byte(password), []byte(a.Password)); err != nil {
+		return nil, errors.New("wrong username/password")
 	}
 	return a, nil
 }

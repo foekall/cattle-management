@@ -5,5 +5,5 @@ import (
 )
 
 func ValidateEmail(field validator.FieldLevel) bool {
-	return false //strings.Contains((field.Field().String(), "abc")
+	return true //strings.Contains((field.Field().String(), "abc")
 }
