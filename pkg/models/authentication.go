@@ -2,9 +2,10 @@ package models
 
 import (
 	"errors"
-	"log"
 	"os"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -23,16 +24,46 @@ type UserInfo struct {
 	Password string
 }
 
-func Login(a *Auth) (*Auth, error) {
+type Token struct {
+	TokenString string
+}
+
+type TokenResponse struct {
+	Role string
+	Id   int64
+}
+
+func Login(a *Auth) (string, error) {
 
 	var userinfo UserInfo
+	// var token Token
 	db.Table("users").Select("password", "id").Where("email = ?", a.Email).Scan(&userinfo)
 	password := userinfo.Password
 	// userid := userinfo.Id
-	log.Println(os.Getenv("username"))
+	// log.Println(os.Getenv("username"))
 
+	// validate password from user input and database
 	if err := bcrypt.CompareHashAndPassword([]byte(password), []byte(a.Password)); err != nil {
-		return nil, errors.New("wrong username/password")
+		return "", errors.New("wrong username/password")
 	}
-	return a, nil
+
+	token, err := GenerateToken(userinfo)
+	if err != nil {
+		return "", errors.New(err.Error())
+	}
+
+	return token, nil
+}
+
+func GenerateToken(userinfo UserInfo) (string, error) {
+	claims := jwt.MapClaims{}
+	claims["authorized"] = true
+	claims["id"] = userinfo.Id
+	claims["exp"] = time.Now().Add(time.Minute * 15).Unix()
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token, err := at.SignedString([]byte(os.Getenv("secret")))
+	if err != nil {
+		return "", errors.New(err.Error())
+	}
+	return token, nil
 }

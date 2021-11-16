@@ -8,7 +8,10 @@ import (
 var RegisterCattleManagementRoutes = func() {
 	r := gin.Default()
 
+	// r.HandleContext(c * gin.Context)
+
 	v1 := r.Group("api/v1")
+	v1.Use(controllers.TokenAuthMiddleware())
 	v1.POST("/cattle", controllers.CreateCattle)
 	v1.GET("/cattle", controllers.GetAllCattles)
 	v1.GET("/cattle/:id", controllers.GetCattleById)
