@@ -9,21 +9,20 @@ var RegisterCattleManagementRoutes = func() {
 	r := gin.Default()
 
 	// r.HandleContext(c * gin.Context)
-
-	v1 := r.Group("api/v1")
-	v1.Use(controllers.TokenAuthMiddleware())
-	v1.POST("/cattle", controllers.CreateCattle)
-	v1.GET("/cattle", controllers.GetAllCattles)
-	v1.GET("/cattle/:id", controllers.GetCattleById)
-	v1.PUT("/cattle/:id", controllers.UpdateCattle)
-	v1.DELETE("/cattle/:id", controllers.DeleteCattle)
-
 	//routes for user relate
-	v1.POST("/user", controllers.CreateUser)
-	v1.GET("/user/:page/:size", controllers.GetAllUser)
+	r.POST("/user", controllers.CreateUser)
 
 	//routes for authentication
-	v1.POST("/auth", controllers.Auth)
+	r.POST("/auth", controllers.Auth)
+
+	authRoutes := r.Group("api/v1")
+	authRoutes.Use(controllers.TokenAuthMiddleware())
+	authRoutes.GET("/user/:page/:size", controllers.GetAllUser)
+	authRoutes.POST("/cattle", controllers.CreateCattle)
+	authRoutes.GET("/cattle", controllers.GetAllCattles)
+	authRoutes.GET("/cattle/:id", controllers.GetCattleById)
+	authRoutes.PUT("/cattle/:id", controllers.UpdateCattle)
+	authRoutes.DELETE("/cattle/:id", controllers.DeleteCattle)
 
 	r.Run(":8080")
 }

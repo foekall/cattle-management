@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -36,13 +35,14 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 		tokenString := strings.TrimPrefix(h.Header.Get("Authorization"), "Bearer ")
 		token, err := VerifyToken(tokenString)
 		if err != nil {
-			log.Println(err.Error())
+			c.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
 		}
 		// log.Println(token)
-		claims, ok := ExtractToken(token)
-		if ok {
-			log.Println(claims)
-		}
+		// claims, ok := ExtractToken(token)
+		// if ok {
+		// 	log.Println(claims)
+		// }
+		c.Set("tokenString", token)
 		c.Next()
 	}
 }
